@@ -85,6 +85,7 @@ const App = () => {
 
   const resetAudio = () => {
     setAudioBlob(null)
+    toast.success('Audio file reset.')
   }
 
   const analyzeAudio = async () => {
