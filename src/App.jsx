@@ -83,10 +83,14 @@ const App = () => {
     }
   }
 
-  const analyzeAudio=async()=>{
+  const resetAudio = () => {
+    setAudioBlob(null)
+  }
+
+  const analyzeAudio = async () => {
     try {
       //api url end point
-      const res = axios.post(``,{})
+      const res = axios.post(``, {})
 
       //succeessfully message
       toast.success('Successfull message')
@@ -165,7 +169,9 @@ const App = () => {
                 className='p-2 hover:text-red-500 border border-teal-500 hover:border-red-500 rounded-full shadow-md'
               />
             </button>
-            <button>
+            <button
+              onClick={resetAudio}
+            >
               <GrPowerReset size={40}
                 className='p-2 text-red-500 border border-red-500 rounded-full shadow-md'
               />
@@ -175,6 +181,7 @@ const App = () => {
             className='text-center space-x-2'
           >
             <button
+              onClick={analyzeAudio}
               className='px-4 py-2 bg-teal-500 hover:bg-teal-600 text-white rounded-md shadow-md'
             >
               Analyze audio
@@ -190,7 +197,7 @@ const App = () => {
             className='text-center space-x-2'
           >
             <button
-              onClick={()=>setView(!view)}
+              onClick={() => setView(!view)}
               className='px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white rounded-md shadow-md'
             >
               Change Phone Number
@@ -201,7 +208,7 @@ const App = () => {
       {view &&
         <PhoneChangeModal {...{ view, setView, phone, setPhone }} />
       }
-      <Toaster/>
+      <Toaster />
     </div>
   );
 };
