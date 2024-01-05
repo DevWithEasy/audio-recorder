@@ -61,12 +61,14 @@ const Signin = () => {
                     <Input {...{
                         label: 'Email',
                         name: 'email',
+                        currentValue : value.email,
                         value, setValue
                     }} />
 
                     <Input {...{
                         label: 'Password',
                         name: 'password',
+                        currentValue : value.password,
                         value, setValue
                     }} />
                     <button

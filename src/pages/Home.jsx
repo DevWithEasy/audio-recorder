@@ -7,8 +7,6 @@ import axios from 'axios'
 import { Link } from 'react-router-dom'
 
 const Home = () => {
-    const [view, setView] = useState(false)
-    const [phone, setPhone] = useState('01717642515')
     const [recording, setRecording] = useState(false)
     const [audioBlob, setAudioBlob] = useState(null)
     const [audioDataBuffer, setAudioDataBuffer] = useState(null);
@@ -112,7 +110,7 @@ const Home = () => {
                     >
                         <Link
                             to='/dashboard'
-                            className='px-4 py-2 bg-gray-200 text-white rounded'
+                            className='px-6 py-2 bg-blue-400 text-white rounded'
                         >
                             Dashboard
                         </Link>
