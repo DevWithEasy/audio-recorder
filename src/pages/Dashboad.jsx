@@ -6,7 +6,7 @@ const Dashboad = () => {
     const [view, setView] = useState(false)
     return (
         <div
-            className=''
+            className='md:w-1/2 md:mx-auto'
         >
             <div
                 className='m-2 p-4 flex flex-col items-center space-y-4 bg-white rounded-md'

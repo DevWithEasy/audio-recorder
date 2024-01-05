@@ -5,8 +5,10 @@ import { CiPlay1 } from "react-icons/ci"
 import { GrPowerReset } from "react-icons/gr"
 import axios from 'axios'
 import { Link } from 'react-router-dom'
+import useUserStore from '../store/userStore'
 
 const Home = () => {
+    const {removeUser} = useUserStore()
     const [recording, setRecording] = useState(false)
     const [audioBlob, setAudioBlob] = useState(null)
     const [audioDataBuffer, setAudioDataBuffer] = useState(null);
@@ -106,7 +108,7 @@ const Home = () => {
                 className='w-11/12 mx-auto md:w-2/4 pb-40 space-y-12 bg-white rounded-md'
             >
                 <div
-                        className='p-2 flex justify-end'
+                        className='p-2 flex justify-end space-x-2'
                     >
                         <Link
                             to='/dashboard'
@@ -114,6 +116,12 @@ const Home = () => {
                         >
                             Dashboard
                         </Link>
+                        <button
+                            onClick={()=>removeUser()}
+                            className='px-4 py-2 bg-red-500 text-white rounded'
+                        >
+                            Logout
+                        </button>
                     </div>
                 <div
                     className='flex flex-col justify-center items-center space-x-4'
