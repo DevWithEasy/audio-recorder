@@ -1,34 +1,32 @@
 import React, { useState } from 'react';
 import Input from '../component/Input';
 import icon from '../assets/icon.png'
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast'
 import axios from 'axios';
+import { db } from '../utils/dbConfig';
+import { ref, set } from 'firebase/database';
 
 const Signup = () => {
     const navigate = useNavigate()
     const [value, setValue] = useState({
-        name : '',
-        phone : '',
+        name: '',
+        phone: '',
         email: '',
         password: ''
     })
-    const handleSignup = async(e) => {
+    const handleSignup = async (e) => {
         e.preventDefault()
-        if(!value.email || !value.password){
+        if (!value.email || !value.password) {
             return toast.error('Please enter email and password')
         }
         //----------production------------
 
-        // try {
-        //     const res = axios.post('',value)
-        //     if(res.data){
-        //         addUser(res.data)
-        //         navigate('/signin')
-        //     }
-        // } catch (error) {
-        //     toast.error('Something went wrong')
-        // }
+        try {
+            set(ref(db, 'users/' + value.email), value)
+        } catch (e) {
+            console.error("Error adding document: ", e)
+        }
     }
     return (
         <div
@@ -57,29 +55,29 @@ const Signup = () => {
                     <Input {...{
                         label: 'Name',
                         name: 'name',
-                        currentValue : value.name,
+                        currentValue: value.name,
                         value, setValue
                     }} />
 
                     <Input {...{
                         label: 'Phone',
                         name: 'phone',
-                        type : 'phone',
-                        currentValue : value.phone,
+                        type: 'phone',
+                        currentValue: value.phone,
                         value, setValue
                     }} />
                     <Input {...{
                         label: 'Email',
                         name: 'email',
-                        type : 'email',
-                        currentValue : value.email,
+                        type: 'email',
+                        currentValue: value.email,
                         value, setValue
                     }} />
 
                     <Input {...{
                         label: 'Password',
                         name: 'password',
-                        currentValue : value.password,
+                        currentValue: value.password,
                         value, setValue
                     }} />
                     <button
