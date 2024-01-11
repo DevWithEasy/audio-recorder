@@ -33,7 +33,7 @@ const Signin = () => {
                 })
                 if(users[0]){
                     addUser(users[0])
-                    toast.error('login succesfull')
+                    toast.success('login succesfull')
                     navigate('/')
                     setLoading(false)
                 }else{
