@@ -1,21 +1,18 @@
-// Import the functions you need from the SDKs you need
 import { initializeApp } from "firebase/app";
-import { getAnalytics } from "firebase/analytics";
-import { getDatabase } from "firebase/database";
+import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDzbDOQbVBxFmBqVcXOd0e4SXsqfpJrp6o",
-    authDomain: "scam-detector-app.firebaseapp.com",
-    databaseURL: "https://scam-detector-app-default-rtdb.asia-southeast1.firebasedatabase.app",
-    projectId: "scam-detector-app",
-    storageBucket: "scam-detector-app.appspot.com",
-    messagingSenderId: "68047405998",
-    appId: "1:68047405998:web:5451f48af35b27b07d3e3f",
-    measurementId: "G-WMMMGBY5R1"
+    apiKey: "AIzaSyDteRZ3R2sy02k3gFnTXUsmQ8sOahms1M0",
+    authDomain: "hedayat-bangla.firebaseapp.com",
+    databaseURL: "https://hedayat-bangla-default-rtdb.firebaseio.com",
+    projectId: "hedayat-bangla",
+    storageBucket: "hedayat-bangla.appspot.com",
+    messagingSenderId: "93517133717",
+    appId: "1:93517133717:web:d3e19706c4ca5136f1689c",
+    measurementId: "G-FXLBJ8LT23"
 };
 
 // Initialize Firebase
 const app = initializeApp(firebaseConfig);
-const db = getDatabase(app)
-const analytics = getAnalytics(app);
-export {db}
+const db = getFirestore(app)
+export { db }

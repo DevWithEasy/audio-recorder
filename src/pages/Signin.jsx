@@ -1,38 +1,54 @@
 import React, { useState } from 'react';
 import Input from '../component/Input';
 import icon from '../assets/icon.png'
-import { Link,useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast'
-import axios from 'axios';
 import useUserStore from '../store/userStore';
+import { db } from '../utils/dbConfig';
+import { collection, getDocs, query, where } from 'firebase/firestore';
 
 const Signin = () => {
     const navigate = useNavigate()
-    const {addUser} = useUserStore()
+    const { addUser } = useUserStore()
+    const [loading, setLoading] = useState(false)
     const [value, setValue] = useState({
-        email: '',
+        phone: '',
         password: ''
     })
-    const handleLogin = async(e) => {
+    const handleLogin = async (e) => {
         e.preventDefault()
-        if(!value.email || !value.password){
+        if (!value.phone || !value.password) {
             return toast.error('Please enter email and password')
         }
-        //----------production------------
+        setLoading(true)
+        try {
+            const q = query(collection(db, "users"), where("phone", "==", value.phone),where("password", "==", value.password ))
 
-        // try {
-        //     const res = axios.post('',value)
-        //     if(res.data){
-        //         addUser(res.data)
-        //         navigate('/')
-        //     }
-        // } catch (error) {
-        //     toast.error('Something went wrong')
-        // }
-        
-        //-------trail code-----
-        addUser(value)
-        navigate('/')
+            const findUser = await getDocs(q)
+
+            if(findUser){
+                const users = []
+                findUser.forEach(doc=>{
+                    users.push(doc.data())
+                })
+                if(users[0]){
+                    addUser(users[0])
+                    toast.error('login succesfull')
+                    navigate('/')
+                    setLoading(false)
+                }else{
+                    toast.error('Credentials wrong user not found.')
+                    setLoading(false)
+                }
+            }else{
+                toast.error('Credentials wrong')
+                setLoading(false)
+            }
+
+        } catch (error) {
+            setLoading(false)
+            toast.error(error)
+        }
     }
     return (
         <div
@@ -59,22 +75,22 @@ const Signin = () => {
                     className='space-y-2'
                 >
                     <Input {...{
-                        label: 'Email',
-                        name: 'email',
-                        currentValue : value.email,
+                        label: 'Phone Number',
+                        name: 'phone',
+                        currentValue: value.phone,
                         value, setValue
                     }} />
 
                     <Input {...{
                         label: 'Password',
                         name: 'password',
-                        currentValue : value.password,
+                        currentValue: value.password,
                         value, setValue
                     }} />
                     <button
                         className='w-full p-2 bg-teal-500 text-white rounded'
                     >
-                        Login
+                        {loading ? 'Loging...' : 'Login'}
                     </button>
                 </form>
                 <div

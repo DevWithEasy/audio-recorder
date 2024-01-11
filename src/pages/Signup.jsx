@@ -5,10 +5,11 @@ import { Link, useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast'
 import axios from 'axios';
 import { db } from '../utils/dbConfig';
-import { ref, set } from 'firebase/database';
+import { collection, addDoc } from "firebase/firestore";
 
 const Signup = () => {
     const navigate = useNavigate()
+    const[loading,setLoading] = useState(false)
     const [value, setValue] = useState({
         name: '',
         phone: '',
@@ -20,12 +21,17 @@ const Signup = () => {
         if (!value.email || !value.password) {
             return toast.error('Please enter email and password')
         }
-        //----------production------------
-
+        setLoading(!loading)
         try {
-            set(ref(db, 'users/' + value.email), value)
-        } catch (e) {
-            console.error("Error adding document: ", e)
+            const docRef = await addDoc(collection(db, "users"), value)
+            if(docRef.id){
+                toast.success('account created')
+                navigate('/signin')
+                setLoading(!loading)
+            }
+        } catch (error) {
+            toast.error(error)
+            setLoading(!loading)
         }
     }
     return (
@@ -83,7 +89,7 @@ const Signup = () => {
                     <button
                         className='w-full p-2 bg-teal-500 text-white rounded'
                     >
-                        Signup
+                        {loading ? 'Creating ...' : 'Signup'}
                     </button>
                 </form>
                 <div
