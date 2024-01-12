@@ -1,9 +1,25 @@
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import userImage from '../assets/demo-user.png'
 import UpdateModal from '../component/UpdateModal';
+import useUserStore from '../store/userStore';
+import { collection, onSnapshot, query, where } from 'firebase/firestore';
+import { db } from '../utils/dbConfig';
 
 const Dashboad = () => {
     const [view, setView] = useState(false)
+    const { user, removeUser } = useUserStore()
+    const [records, setRecords] = useState([])
+    useEffect(() => {
+        const q = query(collection(db, "records"), where("user", "==", user.id))
+        const unsubscribe = onSnapshot(q, (querySnapshot) => {
+            const data = []
+            querySnapshot.forEach((doc) => {
+                data.push({...doc.data(),id: doc.id})
+            })
+            setRecords(data)
+        });
+    }, [])
+    console.log(records)
     return (
         <div
             className='md:w-1/2 md:mx-auto'
@@ -21,24 +37,34 @@ const Dashboad = () => {
                     <p
                         className='pb-2 text-xl font-semibold'
                     >
-                        Md Robiul Awal
+                        {user?.name}
                     </p>
                     <p
                         className='text-sm text-gray-500'
                     >
-                        robiulawal68@gmail.com
+                        {user?.email}
                     </p>
                     <p
                         className='text-sm text-gray-500'
                     >
-                        +8801717642515
+                        {user?.phone}
                     </p>
-                    <button
-                        onClick={()=>setView(!view)}
-                        className='px-2 py-1 text-sm border rounded'
+                    <div
+                        className='space-x-2'
                     >
-                        Update
-                    </button>
+                        <button
+                            onClick={() => setView(!view)}
+                            className='px-2 py-1 text-sm border rounded'
+                        >
+                            Update
+                        </button>
+                        <button
+                            onClick={() => removeUser()}
+                            className='px-2 py-1 text-sm border rounded bg-red-500 text-white'
+                        >
+                            Logout
+                        </button>
+                    </div>
                 </div>
             </div>
             <div
@@ -77,64 +103,30 @@ const Dashboad = () => {
                             </tr>
                         </thead>
                         <tbody>
-                            <tr
+                            {records &&
+                                records.map(record=>
+                                    <tr
+                                    key={record?.id}
                                 className='text-gray-500 text-sm border-b cursor-pointer'
                             >
                                 <td className='px-2 py-1'>
-                                    01/01/2024
+                                {record?.date}
                                 </td>
                                 <td className='px-2 py-1'>
-                                    Task 01
+                                {record?.url}
                                 </td>
                                 <td className='px-2 py-1'>
                                     Task 01
                                 </td>
                             </tr>
-                            <tr
-                                className='text-gray-500 text-sm border-b cursor-pointer'
-                            >
-                                <td className='px-2 py-1'>
-                                    01/01/2024
-                                </td>
-                                <td className='px-2 py-1'>
-                                    Task 01
-                                </td>
-                                <td className='px-2 py-1'>
-                                    Task 01
-                                </td>
-                            </tr>
-                            <tr
-                                className='text-gray-500 text-sm border-b cursor-pointer'
-                            >
-                                <td className='px-2 py-1'>
-                                    01/01/2024
-                                </td>
-                                <td className='px-2 py-1'>
-                                    Task 01
-                                </td>
-                                <td className='px-2 py-1'>
-                                    Task 01
-                                </td>
-                            </tr>
-                            <tr
-                                className='text-gray-500 text-sm border-b cursor-pointer'
-                            >
-                                <td className='px-2 py-1'>
-                                    01/01/2024
-                                </td>
-                                <td className='px-2 py-1'>
-                                    Task 01
-                                </td>
-                                <td className='px-2 py-1'>
-                                    Task 01
-                                </td>
-                            </tr>
+                                )
+                            }
                         </tbody>
                     </table>
                 </div>
             </div>
             {view &&
-                <UpdateModal {...{view,setView}}/>
+                <UpdateModal {...{ view, setView }} />
             }
         </div>
     );

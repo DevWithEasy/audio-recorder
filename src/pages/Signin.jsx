@@ -12,24 +12,24 @@ const Signin = () => {
     const { addUser } = useUserStore()
     const [loading, setLoading] = useState(false)
     const [value, setValue] = useState({
-        phone: '',
+        email: '',
         password: ''
     })
     const handleLogin = async (e) => {
         e.preventDefault()
-        if (!value.phone || !value.password) {
+        if (!value.email || !value.password) {
             return toast.error('Please enter email and password')
         }
         setLoading(true)
         try {
-            const q = query(collection(db, "users"), where("phone", "==", value.phone),where("password", "==", value.password ))
+            const q = query(collection(db, "users"), where("email", "==", value.email),where("password", "==", value.password ))
 
             const findUser = await getDocs(q)
 
             if(findUser){
                 const users = []
                 findUser.forEach(doc=>{
-                    users.push(doc.data())
+                    users.push({id: doc.id,...doc.data()})
                 })
                 if(users[0]){
                     addUser(users[0])
@@ -76,8 +76,8 @@ const Signin = () => {
                 >
                     <Input {...{
                         label: 'Phone Number',
-                        name: 'phone',
-                        currentValue: value.phone,
+                        name: 'email',
+                        currentValue: value.email,
                         value, setValue
                     }} />
 

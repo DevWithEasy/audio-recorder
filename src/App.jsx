@@ -1,5 +1,4 @@
 import { useRoutes } from 'react-router-dom'
-import Home from './pages/Home';
 import Protected from './pages/Protected';
 import Signin from './pages/Signin';
 import Signup from './pages/Signup';
@@ -17,15 +16,9 @@ const App = () => {
       element : <Signup/>
     },
     {
-      path: '/dashboard',
-      element : <Protected>
-        <Dashboad/>
-      </Protected>
-    },
-    {
       path: '/',
       element : <Protected>
-        <Home/>
+        <Dashboad/>
       </Protected>
     },
   ])
