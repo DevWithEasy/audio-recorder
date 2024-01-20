@@ -9,17 +9,37 @@ const Dashboad = () => {
     const [view, setView] = useState(false)
     const { user, removeUser } = useUserStore()
     const [records, setRecords] = useState([])
-    useEffect(() => {
-        const q = query(collection(db, "records"), where("user", "==", user.id))
-        const unsubscribe = onSnapshot(q, (querySnapshot) => {
-            const data = []
-            querySnapshot.forEach((doc) => {
-                data.push({...doc.data(),id: doc.id})
+    // useEffect(() => {
+    //     const q = query(collection(db, "records"), where("user", "==", user.id))
+    //     const unsubscribe = onSnapshot(q, (querySnapshot) => {
+    //         const data = []
+    //         querySnapshot.forEach((doc) => {
+    //             data.push({...doc.data(),id: doc.id})
+    //         })
+    //         setRecords(data)
+    //     });
+    // }, [])
+    // console.log(records)
+
+    const getDatas=async() =>{
+        try {
+            const q = query(collection(db, "responses"), where("user", "==", user.email))
+
+            onSnapshot(q, (querySnapshot) => {
+                
+                const responses = [];
+                querySnapshot.forEach((doc) => {
+                    responses.push(doc.data().name);
+                })
+
+                setRecords(responses)
+
             })
-            setRecords(data)
-        });
-    }, [])
-    console.log(records)
+        } catch (error) {
+            console.log(error)
+        }
+    }
+    getDatas()
     return (
         <div
             className='md:w-1/2 md:mx-auto'
