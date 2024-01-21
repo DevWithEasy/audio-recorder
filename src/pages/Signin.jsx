@@ -1,11 +1,12 @@
+import { signInWithEmailAndPassword } from 'firebase/auth';
+import { doc, getDoc } from 'firebase/firestore';
 import React, { useState } from 'react';
-import Input from '../component/Input';
-import icon from '../assets/icon.png'
+import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast'
+import icon from '../assets/icon.png';
+import Input from '../component/Input';
 import useUserStore from '../store/userStore';
-import { db } from '../utils/dbConfig';
-import { collection, getDocs, query, where } from 'firebase/firestore';
+import { auth, db } from '../utils/dbConfig';
 
 const Signin = () => {
     const navigate = useNavigate()
@@ -22,32 +23,22 @@ const Signin = () => {
         }
         setLoading(true)
         try {
-            const q = query(collection(db, "users"), where("email", "==", value.email),where("password", "==", value.password ))
-
-            const findUser = await getDocs(q)
-
-            if(findUser){
-                const users = []
-                findUser.forEach(doc=>{
-                    users.push({id: doc.id,...doc.data()})
-                })
-                if(users[0]){
-                    addUser(users[0])
-                    toast.success('login succesfull')
+            signInWithEmailAndPassword(auth, value.email, value.password)
+                .then(async (userCredential) => {
+                    const user = userCredential.user
+                    const docRef = doc(db, "users", user.uid)
+                    const docSnap = await getDoc(docRef)
+                    addUser(docSnap.data())
+                    toast.success('Login successful')
                     navigate('/')
+                })
+                .catch((error) => {
                     setLoading(false)
-                }else{
-                    toast.error('Credentials wrong user not found.')
-                    setLoading(false)
-                }
-            }else{
-                toast.error('Credentials wrong')
-                setLoading(false)
-            }
-
+                    toast.error(error.message)
+                })
         } catch (error) {
             setLoading(false)
-            toast.error(error)
+            toast.error(error.message)
         }
     }
     return (

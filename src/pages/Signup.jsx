@@ -1,15 +1,15 @@
+import { createUserWithEmailAndPassword } from "firebase/auth";
+import { doc, setDoc } from "firebase/firestore";
 import React, { useState } from 'react';
-import Input from '../component/Input';
-import icon from '../assets/icon.png'
+import toast from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
-import toast from 'react-hot-toast'
-import axios from 'axios';
-import { db } from '../utils/dbConfig';
-import { collection, addDoc } from "firebase/firestore";
+import icon from '../assets/icon.png';
+import Input from '../component/Input';
+import { auth, db } from '../utils/dbConfig';
 
 const Signup = () => {
     const navigate = useNavigate()
-    const[loading,setLoading] = useState(false)
+    const [loading, setLoading] = useState(false)
     const [value, setValue] = useState({
         name: '',
         phone: '',
@@ -23,12 +23,21 @@ const Signup = () => {
         }
         setLoading(!loading)
         try {
-            const docRef = await addDoc(collection(db, "users"), value)
-            if(docRef.id){
-                toast.success('account created')
-                navigate('/signin')
-                setLoading(!loading)
-            }
+            createUserWithEmailAndPassword(auth, value.email, value.password)
+                .then(async (userCredential) => {
+                    await setDoc(doc(db, "users", userCredential.user.uid), {
+                        userID: userCredential.user.uid,
+                        ...value
+                    })
+                    toast.success('account created')
+                    navigate('/signin')
+                    setLoading(!loading)
+                })
+                .catch((error) => {
+                    console.log(error)
+                    toast.error(error.message)
+                    setLoading(!loading)
+                });
         } catch (error) {
             toast.error(error)
             setLoading(!loading)
